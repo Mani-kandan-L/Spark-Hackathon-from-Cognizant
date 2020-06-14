@@ -1,0 +1,396 @@
+package Hackthon
+
+import org.apache.spark.SparkConf
+import org.apache.spark.SparkContext
+import org.apache.spark.sql.SQLContext
+import org.apache.spark.sql.SparkSession
+import org.apache.spark.storage.StorageLevel
+import org.apache.spark.sql 
+import org.apache.spark.sql.types._
+import org.apache.spark.sql.SQLImplicits
+import org.apache.spark.sql._
+import org.apache.spark.sql.functions._
+import org.apache.spark.sql.Dataset
+import org.apache.spark.sql.Row 
+import org.apache.spark.sql.types.{StructType, StructField, StringType, IntegerType,DateType}
+
+
+object sparksql { 
+  
+  case class insureclass (IssuerId:Int,
+      IssuerId2:Int,
+      BusinessDate:String,
+      StateCode:String,
+      SourceName:String,
+      NetworkName:String,
+      NetworkURL:String,
+      custnum:String,
+      MarketCoverage:String,
+      DentalOnlyPlan:String)
+      
+      
+  def main(args:Array[String])
+  {
+    println("********Starting Hackthon usecase 1*******")
+   
+   val conf = new SparkConf().setAppName("Hackthon").setMaster("local[*]")
+   .set("spark.sql.catalogImplementation","hive")
+   .set("hive.exec.dynamic.partition.mode", "nonrestrict")
+   .set("spark.sql.warehouse.dir","hdfs://localhost:54310/user/hive/warehouse")
+   .set("spark.files.overwrite" , "true" )
+   
+
+   val spark=SparkSession.builder().appName("Hackthon").master("local[*]")
+   .config(conf)
+   .config("spark.history.fs.logDirectory" , "file:///tmp/spark-events")
+   .config("spark.eventLog.dir" , "file:///tmp/spark-events")
+   .config("spark.eventLog.enabled" , "true")
+   .config("spark.history.fs.logDirectory", "file:///tmp/spark-events")
+   .config("spark.eventLog.dir", "file:////tmp/spark-events")
+   .config("spark.eventLog.enabled", "true")
+   .getOrCreate();
+   
+   val sc = spark.sparkContext
+   sc.setLogLevel("ERROR")  // Set the log level to ERROR only
+   val sqlc = spark.sqlContext
+   
+  import sqlc.implicits._
+   
+  val insuredata = sc.textFile("file:/home/hduser/sparkhack2/SPARK_HACKATHON_2020/insuranceinfo1.csv")
+
+  val insuredata_header = insuredata.first()
+  val insuredata_removeheader = insuredata.filter(row => row != insuredata_header)
+
+  println ("No of records with header : " + insuredata.count() )
+  println ("No of records without header : " + insuredata_removeheader.count())
+
+  println ( "Display first 10 records without header of insuredata" ) 
+  insuredata_removeheader.take(10).foreach (println)
+
+  val insuredata_removeblanklines = insuredata_removeheader.filter(x =>x.trim().length() > 0 )
+  println ( "No of records without header and blank lines : " + insuredata_removeblanklines.count())
+
+  val insuredata_splitrow = insuredata_removeblanklines.map( x => x.split(",",-1))
+  println("Printing the first record after splitting")
+
+  val insuredata_firstrecord = insuredata_splitrow.first().foreach( println) 
+  val insuredata_filter = insuredata_splitrow.filter( x => x.length == 10 )
+
+  val insuredata_schema  = insuredata_filter.map(x => insureclass(x(0).toInt,x(1).toInt,x(2),
+      x(3),x(4),x(5),x(6),x(7),x(8),x(9)))
+
+  println ( "No of records with header : " + insuredata.count()) 
+  println ( "No of records without header : " + insuredata_removeheader.count()) 
+  println ( "No of records in Schemad RDD : " + insuredata_schema.count())
+
+  val insuredata_reject = insuredata_splitrow.filter(x => x.length != 10 )
+  println ( "No of rejected records Coz of incorrect data elements = " + insuredata_reject.count())
+  
+  println("*******Applying the same to insuredata2********")
+  
+  val insuredata2 = sc.textFile("file:/home/hduser/sparkhack2/SPARK_HACKATHON_2020/insuranceinfo2.csv")
+
+  val insuredata2_header = insuredata2.first()
+  val insuredata2_removeheader = insuredata2.filter(row => row != insuredata2_header)
+
+  println ("No of records with header insureadata2 : " + insuredata2.count())
+  println ("No of records without header insureadata2 : " + insuredata2_removeheader.count()) 
+
+  println ("Display first 10 records without header of insureadata2") 
+  insuredata2_removeheader.take(10).foreach(println)
+
+  val insuredata2_removeblanklines = insuredata2_removeheader.filter(x =>x.trim().length() > 0 )
+  println("No of records without header and blank lines in insureadata2 : " + insuredata2_removeblanklines.count())
+
+  val insuredata2_splitrow = insuredata2_removeblanklines.map( x => x.split(",",-1))    
+  val insuredata2_firstrecord = insuredata2_splitrow.first().foreach( println)
+
+  val insuredata2_filter = insuredata2_splitrow.filter( x => x.length == 10 & x(0).nonEmpty & x(1).nonEmpty)
+  val insuredata2_schema  = insuredata2_filter.map(x => insureclass(if(x(0)==" ") 999999 else x(0).toInt,x(1).toInt,x(2),x(3),
+    x(4),x(5),x(6),x(7),x(8),x(9)))
+
+  println ( "No of records with header insureadata2 : " + insuredata2.count()) 
+  println ( "No of records without header insureadata2 : " + insuredata2_removeheader.count()) 
+  println ( "No of records in Schemad RDD insureadata2 : " + insuredata2_schema.count())
+
+  val insuredata2_reject = insuredata2_splitrow.filter(x => x.length != 10) 
+  println ( "No of rejected records Coz of incorrect data elements = " + insuredata2_reject.count()) 
+  
+  println("********Starting Hackthon usecase 2*******")
+  println("Data merging, Deduplication, Performance Tuning & Persistance")
+  val insuredatamerged = insuredata_schema.union(insuredata2_schema)
+  insuredatamerged.cache()
+
+  val first_few_rows = insuredatamerged.take(5).foreach(println)
+  println("No of Merged count of both files after the filteration and caching process is") 
+  val count_joined = insuredatamerged.count() 
+    
+  val count_individual = insuredata_schema.count() + insuredata2_schema.count()
+  println ( "Individual RDD Count : " + count_individual + " Joined RDD Count : " + count_joined ) 
+    
+    if (count_joined == count_joined)
+    {
+       println ( "The count of Individual RDDs match to Joined RDD" )
+    }
+    else {
+      println ( "The count of Individual RDDs does not match to Joined RDD" )
+    }
+
+   val insuredata_mergeddistinct = insuredatamerged.distinct()  
+   val number_Of_Duplicates = count_joined - insuredata_mergeddistinct.count()
+   println ("Number of duplicates in the joined RDD = " + number_Of_Duplicates)
+
+   val insuredatarepart = insuredata_mergeddistinct.repartition(8)
+   println("Number of partition before repartitioning is " + insuredatamerged.getNumPartitions)
+   println("Number of partition After repartitioning is " + insuredatarepart.getNumPartitions )
+
+   val rdd_20191001 = insuredatarepart.filter(l => l.BusinessDate =="2019-10-01")
+   val rdd_20191002 = insuredatarepart.filter(l => l.BusinessDate =="2019-10-02")
+       
+    println("Saving the reject data and business date segregated data as files to hdfs location")
+    
+    val insuredaterepartdf = sqlc.createDataFrame(insuredatarepart)
+    
+    rdd_20191001.toDF().coalesce(1).write.mode(SaveMode.Overwrite)
+    .csv("file:/home/hduser/hackthon_saverdd/rdd_20191001")
+    
+    rdd_20191002.toDF().coalesce(1).write.mode(SaveMode.Overwrite)
+    .csv("file:/home/hduser/hackthon_saverdd/rdd_20191002")
+    
+
+         println("********Starting Hackthon usecase 3*******")
+         
+         val insurestruct = StructType(Array(StructField("IssuerId",IntegerType,true),
+      StructField("IssuerId2",IntegerType,true),
+      StructField("BusinessDate",DateType,true),
+      StructField("StateCode",StringType,true),
+      StructField("SourceName",StringType,true),
+      StructField("NetworkName",StringType,true),
+      StructField("NetworkURL",StringType,true),
+      StructField("custnum",StringType,true),
+      StructField("MarketCoverage",StringType,true),
+      StructField("DentalOnlyPlan",StringType,true)))
+      
+      val insuredatadf = spark.read.option("header","true").option("delimiter",",").option("escape", ",")
+      .csv("file:/home/hduser/sparkhack2/SPARK_HACKATHON_2020/insuranceinfo1.csv",
+          "file:/home/hduser/sparkhack2/SPARK_HACKATHON_2020/insuranceinfo2.csv")
+      .toDF("IssuerId","IssuerId2","BusinessDate","StateCode","SourceName" , 
+          "NetworkName", "NetworkURL","custnum","MarketCoverage","DentalOnlyPlan")
+          
+      val column_renamed = insuredatadf.withColumnRenamed("StateCode", "stcd")
+      .withColumnRenamed("SourceName", "srcnm")
+      .drop("DentalOnlyPlan")
+      .withColumn( "issueridcomposite" ,  concat( 'IssuerId , 'IssuerId2 ) )
+      .withColumn("sysdt", current_date())
+      .withColumn("systs", current_timestamp())
+      
+      println("Dislpayong records after Renaming of column names,dropping a column and adding timestamp in insurance data")
+      column_renamed.printSchema()
+      column_renamed.show(5)
+      
+      val insuredatadf_missingvalues = column_renamed.na.drop()
+      val countAll = insuredatadf_missingvalues.count()
+      val countNoneMissing =  column_renamed.count()
+      println ( "No of records where at least 1 column is blank = " + (countAll-countNoneMissing))
+    
+      val reusableobj = new org.inceptez.hack.allmethods
+
+      val myMethods = new org.inceptez.hack.allmethods
+      val remsplchars = spark.udf.register("remsplchars", myMethods.remSpecialChars _) 
+
+      println ( "Cleaning up Network URL" ) 
+      
+      val custstates = sc.textFile("file:/home/hduser/sparkhack2/SPARK_HACKATHON_2020/custs_states.csv")
+      val custfilter = custstates.map(x => x.split(",")).filter(x => x.length == 5)
+      val statesfilter = custstates.map(x => x.split(",")).filter(x => x.length == 2)
+      
+      println("********Starting Hackthon usecase 4*******")
+      
+      val custstatesdf = spark.read.csv("file:/home/hduser/sparkhack2/SPARK_HACKATHON_2020/custs_states.csv")
+      custstatesdf.printSchema()
+      val custfilterdf = custstatesdf.filter('_c2.isNotNull )
+      val statesfilterdf = custstatesdf.filter('_c2.isNull).drop("_c2", "_c3", "_c4")
+      statesfilterdf.printSchema()
+      custfilterdf.withColumnRenamed("_c0", "custID" )
+                     .withColumnRenamed("_c1", "custFName")
+                     .withColumnRenamed("_c2", "custLName")
+                     .withColumnRenamed("_c3" , "custAge")
+                     .withColumnRenamed("_c4" , "custProfession")
+                     .createOrReplaceTempView("custview")
+      
+       statesfilterdf.withColumnRenamed("_c0" , "stateCode")
+                       .withColumnRenamed("_c1" , "State")
+                       .createOrReplaceTempView("statesview")
+                       
+       column_renamed.createOrReplaceTempView("insureview")   
+       val cleanNetworkName = spark.sql( """ select remsplchars(networkURL) as cleannetworkname from insureview""" )
+       println ("Showing the first 3 records" )
+       cleanNetworkName.show(3)
+       
+       val date_time = spark.sql ( """ select custID , 
+                                         custFName ,
+                                         custLName ,
+                                         current_date() as curdt ,
+                                         current_timestamp() as curts
+                                       from  custview
+                                 """ )
+                                 
+       date_time.printSchema()
+       date_time.show(3, false)
+       
+       val year_month = spark.sql ( """ select businessdate ,
+                                           year( from_unixtime(unix_timestamp(businessdate,'dd-mm-yyyy')))  as businessYear ,
+                                           month( from_unixtime(unix_timestamp(businessdate,'dd-mm-yyyy')))  as businessMonth
+                                         from insureview
+                                  """ )
+                                  
+       year_month.show(3, false)
+       
+       val protocol = spark.sql ( """ select  networkURL ,
+                                            case when substr( networkURL , 1 , instr(networkURL,':')-1 ) 
+                                                                in ( 'http' , 'https') 
+                                                 then
+                                                      'Protocol'
+                                                 else 'No Protocol'
+                                                 end as Protocol
+                                         from insureview
+                                  """ ) 
+                                  
+       protocol.show(3, false)
+       
+       val all_columns = spark.sql (""" select 
+                                     cview.custID ,
+                                     cview.custFName ,
+                                     cview.custLName ,
+                                     cview.custAge ,
+                                     cview.custProfession ,
+                                     current_date() as curDT ,
+                                     current_timestamp() as curTS ,
+                                     iview.businessdate ,
+                                     year( from_unixtime(unix_timestamp(iview.businessdate,'dd-mm-yyyy')))  as businessYear ,
+                                     month( from_unixtime(unix_timestamp(iview.businessdate,'dd-mm-yyyy')))  as businessMonth , 
+                                     iview.networkURL ,
+                                     case when substr( iview.networkURL , 1 , instr(iview.networkURL,':')-1 ) 
+                                                     in ( 'http' , 'https') 
+                                          then
+                                             'Protocol'
+                                           else 'No Protocol'
+                                          end as Protocol ,
+                                     sview.State 
+                                   from
+                                     custview as cview 
+                                        inner join 
+                                     insureview as iview 
+                                       on ( iview.custnum = cview.custID )
+                                        inner join
+                                     statesview as sview 
+                                       on ( iview.stcd = sview.stateCode )
+                                   """)
+                                   
+       all_columns.show(3)
+       
+       val summaryDF = spark.sql( """ select
+                                          row_number() over (PARTITION BY q2.Protocol
+                                                                 ORDER BY q2.Count ) as SeqNo ,
+                                          q2.* from (                                            
+                                          select 
+                                               round ( avg( q1.Age ) ,2 ) as avgAge ,
+                                               count(1) as Count ,
+                                                q1.State ,
+                                                q1.Protocol ,
+                                                q1.Profession 
+                                            from 
+                                         ( select 
+                                            cview.custAge as Age ,
+                                            cview.custProfession as Profession , 
+                                            case when substr( iview.networkURL , 1 , instr(iview.networkURL,':')-1 ) 
+                                                     in ( 'http' , 'https') 
+                                                  then  'Protocol'
+                                                 else 'No Protocol'
+                                             end as Protocol ,
+                                             sview.State 
+                                             from
+                                                custview as cview 
+                                                   inner join 
+                                                insureview as iview 
+                                                   on ( iview.custnum = cview.custID )
+                                                   inner join
+                                                statesview as sview 
+                                                   on ( iview.stcd = sview.stateCode ) ) q1 
+                                             group by q1.State , q1.Protocol , q1.Profession ) q2
+                                       """ )
+                     
+         summaryDF.show() 
+         
+         println("ending")
+          
+         val mSQLProp = new java.util.Properties()
+               mSQLProp.put( "user" , "root" )
+               mSQLProp.put( "password" , "root" )
+               
+           summaryDF.write
+                    .mode("overwrite")
+                    .jdbc("jdbc:mysql://127.0.0.1/sparkhack",  "insureaggregated" , mSQLProp )
+        
+      
+     
+     println("******Starting Spark streaming Hackthon**********")
+    
+    val chatdata = spark.read.option("delimiter", "~")
+    .option("header" , "false" )
+    .csv( "file:/home/hduser/sparkhack2/SPARK_HACKATHON_2020/realtimedataset/chatdata")
+    .toDF()
+    
+    val chatdatadf = chatdata.withColumnRenamed("_c0", "id" )
+                   .withColumnRenamed("_c1" , "chat")
+                    .withColumnRenamed("_c2" , "type" )
+                    
+    chatdatadf.printSchema()  
+    
+    val customerchats = chatdatadf.select("*").where($"type" === "c")
+                                      
+    val customerchatsnew = customerchats.drop($"type")
+    
+    val customerchatsexploded = customerchats.withColumn("chat", explode(split($"chat"," ")))
+    .createOrReplaceTempView("chatview") 
+    
+    spark.read 
+                .option("header" , "false" )
+                .csv( "file:/home/hduser/sparkhack2/SPARK_HACKATHON_2020/realtimedataset/stopwords" )
+                .toDF("stopword")
+                .createOrReplaceTempView("tempview")
+                
+     val customervalidchats = spark.sql( """ select c.id , 
+     c.chat from chatview c left join tempview t 
+     on ( c.chat = t.stopword )
+     where t.stopword is null """ )     
+     
+     spark.sql( """ drop table if exists default.customervalidchats""" )
+     
+      
+     customervalidchats.write
+                             .mode("append")
+                             .option("path" , "file:/home/hduser/hackthon_saverdd/streaming") 
+                             //.option("path" , "hdfs://127.0.0.1:54310/user/hduser/hivedata/customervalidchats") // Writing the data to external path
+                             .saveAsTable("customervalidchats")
+                            
+    
+     
+     val frequentlyUsed = spark.sql(""" select Upper(chat) as chatkeywords , 
+                                                     count(1) as occurrence 
+                                                 from default.customervalidchats
+                                                    group by Upper(chat)
+                                          """ ) 
+                                          
+                                                                          
+                                          
+     frequentlyUsed.repartition(1)
+                        .write
+                        .mode("overwrite")
+                        .json("file:/home/hduser/hackthon_saverdd/frequentlyUsed")                                     
+
+      println("End of the Program")
+      
+
+  }
+  }

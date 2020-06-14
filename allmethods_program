@@ -1,0 +1,28 @@
+package org.inceptez.hack {
+
+
+class allmethods  extends java.io.Serializable
+{
+
+   def remSpecialChars ( inStr:String ):String =
+    {
+        
+        return inStr.replaceAll("P" , "" )
+                   .replaceAll("D", "" )
+                   .replaceAll("1" , "" )
+                   .replaceAll("2" , "" )
+                   .replaceAll("3" , "" )
+                   .replaceAll("4" , "" )
+                   .replaceAll("5" , "" )
+                   .replaceAll("6" , "" )
+                   .replaceAll("7" , "" )
+                   .replaceAll("8" , "" )
+                   .replaceAll("9" , "" )
+                   .replaceAll( "\\[", "" )
+                   .replaceAll( "\\]", "" )
+                   .replaceAll( "\\(" , "" )
+                   .replaceAll( "\\)" , "" )
+    }
+}
+}
+

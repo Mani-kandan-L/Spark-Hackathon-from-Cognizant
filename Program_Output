@@ -1,0 +1,264 @@
+********Starting Hackthon usecase 1*******
+
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+20/06/10 20:04:35 INFO SparkContext: Running Spark version 2.0.1
+20/06/10 20:04:38 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+20/06/10 20:04:39 WARN Utils: Your hostname, Inceptez resolves to a loopback address: 127.0.0.1; using 192.168.150.130 instead (on interface eth17)
+20/06/10 20:04:39 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+20/06/10 20:04:39 INFO SecurityManager: Changing view acls to: hduser
+20/06/10 20:04:39 INFO SecurityManager: Changing modify acls to: hduser
+20/06/10 20:04:39 INFO SecurityManager: Changing view acls groups to: 
+20/06/10 20:04:39 INFO SecurityManager: Changing modify acls groups to: 
+20/06/10 20:04:39 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(hduser); groups with view permissions: Set(); users  with modify permissions: Set(hduser); groups with modify permissions: Set()
+20/06/10 20:04:41 INFO Utils: Successfully started service 'sparkDriver' on port 43543.
+20/06/10 20:04:42 INFO SparkEnv: Registering MapOutputTracker
+20/06/10 20:04:42 INFO SparkEnv: Registering BlockManagerMaster
+20/06/10 20:04:42 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-e1db5b97-8319-48b5-9581-2b7bd51a23f7
+20/06/10 20:04:42 INFO MemoryStore: MemoryStore started with capacity 278.7 MB
+20/06/10 20:04:42 INFO SparkEnv: Registering OutputCommitCoordinator
+20/06/10 20:04:44 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+20/06/10 20:04:44 INFO SparkUI: Bound SparkUI to 0.0.0.0, and started at http://192.168.150.130:4040
+20/06/10 20:04:44 INFO Executor: Starting executor ID driver on host localhost
+20/06/10 20:04:44 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 36694.
+20/06/10 20:04:44 INFO NettyBlockTransferService: Server created on 192.168.150.130:36694
+20/06/10 20:04:44 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, 192.168.150.130, 36694)
+20/06/10 20:04:44 INFO BlockManagerMasterEndpoint: Registering block manager 192.168.150.130:36694 with 278.7 MB RAM, BlockManagerId(driver, 192.168.150.130, 36694)
+20/06/10 20:04:44 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, 192.168.150.130, 36694)
+20/06/10 20:04:47 INFO EventLoggingListener: Logging events to file:////tmp/spark-events/local-1591799684750
+20/06/10 20:04:47 WARN SparkContext: Use an existing SparkContext, some configuration may not take effect.
+20/06/10 20:04:48 INFO HiveSharedState: Warehouse path is 'hdfs://localhost:54310/user/hive/warehouse'.
+
+No of records with header : 403
+No of records without header : 402
+
+Display first 10 records without header of insuredata
+21989,21989,2019-10-01,AK,HIOS,ODS Premier,https://www.modahealth.com/ProviderSearch/faces/webpages/home.xhtml?dn=ods,13,,
+219,219,2019-10-01,AK,HIOS,ODS Premier
+38344,38344,2019-10-01,AK,HIOS,HeritagePlus,https://www.premera.com/wa/visitor/,13,,
+38536,38536,2019-10-01,AK,HIOS,Lincoln Dental Connect,http://lfg.go2dental.com/member/dental_search/searchprov.cgi?P=LFGDentalConnect&Network=L,13,,
+42507,42507,2019-10-01,AK,HIOS,DentalGuard Preferred,https://www.guardiananytime.com/fpapp/FPWeb/dentalSearch.process,13,,
+73836,73836,2019-10-01,AK,HIOS,Moda Plus AK Regional,https://www.modahealth.com/ProviderSearch/faces/webpages/home.xhtml?dn=ods,13,,
+73836,73836,2019-10-01,AK,HIOS,Moda Plus Providence,https://www.modahealth.com/ProviderSearch/faces/webpages/home.xhtml?dn=ods,14,,
+74819,74819,2019-10-01,AK,HIOS,DenteMax,http://www2.dentemax.com/,13,,
+84859,84859,2019-10-01,AK,HIOS,Ameritas PPO Dental Network,www.standard.com,13,,
+12538,12538,2019-10-01,AL,HIOS,DenteMax,http://www2.dentemax.com/,13,,
+No of records without header and blank lines : 402
+
+Printing the first record after splitting
+21989
+21989
+2019-10-01
+AK
+HIOS
+ODS Premier
+https://www.modahealth.com/ProviderSearch/faces/webpages/home.xhtml?dn=ods
+13
+
+
+No of records with header : 403
+No of records without header : 402
+No of records in Schemad RDD : 401
+No of rejected records Coz of incorrect data elements = 1
+
+*******Applying the same to insuredata2********
+
+No of records with header insureadata2 : 3334
+No of records without header insureadata2 : 3333
+
+Display first 10 records without header of insureadata2
+31195,31195,01-10-2019,SD,SERFF,Sanford Health Plan South Dakota Network,https://www.viiad.com/shp/provider_search_main.asp,14,,
+60536,60536,01-10-2019,SD,SERFF,Avera Health Plans,www.Avera.org/ProviderDirectory,13,,
+61214,61214,01-10-2019,SD,SERFF,DenteMax,http://www2.dentemax.com/,14,,
+62210,62210,01-10-2019,SD,SERFF,DAKOTACARE,http://www.dakotacare.com/locateourproviders/providerdirectory/,15,,
+80261,80261,01-10-2019,SD,SERFF,Lincoln Dental Connect,http://lfg.go2dental.com/member/dental_search/searchprov.cgi?P=LFGDentalConnect&Network=L,13,Individual,No
+80608,80608,01-10-2019,SD,SERFF,DentalGuard Preferred,https://www.guardiananytime.com/fpapp/FPWeb/dentalSearch.process,13,SHOP (Small Group),No
+14948,14948,01-10-2019,UT,SERFF,DeltaCare USA DHMO,http://www.deltadentalins.com/find-a-dentist/,13,Individual,No
+18167,18167,01-10-2019,UT,SERFF,Molina Healthcare of Utah,http://www.molinahealthcare.com/providersearch,13,SHOP (Small Group),Yes
+27619,27619,01-10-2019,UT,SERFF,Arches Horizon Network,http://www.archeshealth.org/providernetwork,13,Individual,Yes
+34541,34541,01-10-2019,UT,SERFF,Exchange Network,www.bridgespanhealth.com,13,Individual,No
+
+No of records without header and blank lines in insureadata2 : 3333
+31195
+31195
+01-10-2019
+SD
+SERFF
+Sanford Health Plan South Dakota Network
+https://www.viiad.com/shp/provider_search_main.asp
+14
+
+
+No of records with header insureadata2 : 3334
+No of records without header insureadata2 : 3333
+No of records in Schemad RDD insureadata2 : 2874
+No of rejected records Coz of incorrect data elements = 0
+
+
+********Starting Hackthon usecase 2*******
+
+Data merging, Deduplication, Performance Tuning & Persistance
+
+insureclass(21989,21989,2019-10-01,AK,HIOS,ODS Premier,https://www.modahealth.com/ProviderSearch/faces/webpages/home.xhtml?dn=ods,13,,)
+insureclass(38344,38344,2019-10-01,AK,HIOS,HeritagePlus,https://www.premera.com/wa/visitor/,13,,)
+insureclass(38536,38536,2019-10-01,AK,HIOS,Lincoln Dental Connect,http://lfg.go2dental.com/member/dental_search/searchprov.cgi?P=LFGDentalConnect&Network=L,13,,)
+insureclass(42507,42507,2019-10-01,AK,HIOS,DentalGuard Preferred,https://www.guardiananytime.com/fpapp/FPWeb/dentalSearch.process,13,,)
+insureclass(73836,73836,2019-10-01,AK,HIOS,Moda Plus AK Regional,https://www.modahealth.com/ProviderSearch/faces/webpages/home.xhtml?dn=ods,13,,)
+
+No of Merged count of both files after the filteration and caching process is
+Individual RDD Count : 3275 Joined RDD Count : 3275
+
+The count of Individual RDDs match to Joined RDD
+Number of duplicates in the joined RDD = 3
+Number of partition before repartitioning is 4
+Number of partition After repartitioning is 8
+Saving the reject data and business date segregated data as files to hdfs location
+
+
+********Starting Hackthon usecase 3*******
+
+
+Dislpayong records after Renaming of column names,dropping a column and adding timestamp in insurance data
+root
+ |-- IssuerId: string (nullable = true)
+ |-- IssuerId2: string (nullable = true)
+ |-- BusinessDate: string (nullable = true)
+ |-- stcd: string (nullable = true)
+ |-- srcnm: string (nullable = true)
+ |-- NetworkName: string (nullable = true)
+ |-- NetworkURL: string (nullable = true)
+ |-- custnum: string (nullable = true)
+ |-- MarketCoverage: string (nullable = true)
+ |-- issueridcomposite: string (nullable = true)
+ |-- sysdt: date (nullable = false)
+ |-- systs: timestamp (nullable = false)
+
++--------+---------+------------+----+-----+--------------------+--------------------+-------+--------------+-----------------+----------+--------------------+
+|IssuerId|IssuerId2|BusinessDate|stcd|srcnm|         NetworkName|          NetworkURL|custnum|MarketCoverage|issueridcomposite|     sysdt|               systs|
++--------+---------+------------+----+-----+--------------------+--------------------+-------+--------------+-----------------+----------+--------------------+
+|   31195|    31195|  01-10-2019|  SD|SERFF|Sanford Health Pl...|https://www.viiad...|     14|          null|       3119531195|2020-06-10|2020-06-10 20:05:...|
+|   60536|    60536|  01-10-2019|  SD|SERFF|  Avera Health Plans|www.Avera.org/Pro...|     13|          null|       6053660536|2020-06-10|2020-06-10 20:05:...|
+|   61214|    61214|  01-10-2019|  SD|SERFF|            DenteMax|http://www2.dente...|     14|          null|       6121461214|2020-06-10|2020-06-10 20:05:...|
+|   62210|    62210|  01-10-2019|  SD|SERFF|          DAKOTACARE|http://www.dakota...|     15|          null|       6221062210|2020-06-10|2020-06-10 20:05:...|
+|   80261|    80261|  01-10-2019|  SD|SERFF|Lincoln Dental Co...|http://lfg.go2den...|     13|    Individual|       8026180261|2020-06-10|2020-06-10 20:05:...|
++--------+---------+------------+----+-----+--------------------+--------------------+-------+--------------+-----------------+----------+--------------------+
+only showing top 5 rows
+
+No of records where at least 1 column is blank = -2327
+Cleaning up Network URL
+
+
+********Starting Hackthon usecase 4*******
+root
+ |-- _c0: string (nullable = true)
+ |-- _c1: string (nullable = true)
+ |-- _c2: string (nullable = true)
+ |-- _c3: string (nullable = true)
+ |-- _c4: string (nullable = true)
+
+root
+ |-- _c0: string (nullable = true)
+ |-- _c1: string (nullable = true)
+
+Showing the first 3 records
++--------------------+
+|    cleannetworkname|
++--------------------+
+|https://www.viiad...|
+|www.Avera.org/rov...|
+|http://www.dentem...|
++--------------------+
+only showing top 3 rows
+
+root
+ |-- custID: string (nullable = true)
+ |-- custFName: string (nullable = true)
+ |-- custLName: string (nullable = true)
+ |-- curdt: date (nullable = false)
+ |-- curts: timestamp (nullable = false)
+
++------+---------+---------+----------+-----------------------+
+|custID|custFName|custLName|curdt     |curts                  |
++------+---------+---------+----------+-----------------------+
+|1     |Kristina |Chung    |2020-06-10|2020-06-10 20:06:00.056|
+|2     |Paige    |Chen     |2020-06-10|2020-06-10 20:06:00.056|
+|3     |Sherri   |Melton   |2020-06-10|2020-06-10 20:06:00.056|
++------+---------+---------+----------+-----------------------+
+only showing top 3 rows
+
++------------+------------+-------------+
+|businessdate|businessYear|businessMonth|
++------------+------------+-------------+
+|01-10-2019  |2019        |1            |
+|01-10-2019  |2019        |1            |
+|01-10-2019  |2019        |1            |
++------------+------------+-------------+
+only showing top 3 rows
+
++--------------------------------------------------+-----------+
+|networkURL                                        |Protocol   |
++--------------------------------------------------+-----------+
+|https://www.viiad.com/shp/provider_search_main.asp|Protocol   |
+|www.Avera.org/ProviderDirectory                   |No Protocol|
+|http://www2.dentemax.com/                         |Protocol   |
++--------------------------------------------------+-----------+
+only showing top 3 rows
+
++------+---------+---------+-------+--------------+----------+--------------------+------------+------------+-------------+--------------------+--------+--------------+
+|custID|custFName|custLName|custAge|custProfession|     curDT|               curTS|businessdate|businessYear|businessMonth|          networkURL|Protocol|         State|
++------+---------+---------+-------+--------------+----------+--------------------+------------+------------+-------------+--------------------+--------+--------------+
+|    13|   Marion|     Moon|     41|     Carpenter|2020-06-10|2020-06-10 20:06:...|  2019-10-01|           6|            7|http://www2.dente...|Protocol|South Carolina|
+|    13|   Marion|     Moon|     41|     Carpenter|2020-06-10|2020-06-10 20:06:...|  2019-10-01|           6|            7|https://www.metli...|Protocol|South Carolina|
+|    13|   Marion|     Moon|     41|     Carpenter|2020-06-10|2020-06-10 20:06:...|  2019-10-01|           6|            7|https://www.metli...|Protocol|South Carolina|
++------+---------+---------+-------+--------------+----------+--------------------+------------+------------+-------------+--------------------+--------+--------------+
+only showing top 3 rows
+
++-----+------+-----+-------------+-----------+--------------------+
+|SeqNo|avgAge|Count|        State|   Protocol|          Profession|
++-----+------+-----+-------------+-----------+--------------------+
+|    1|  45.0|    1|        Idaho|No Protocol|    Childcare worker|
+|    2|  72.0|    1|    Louisiana|No Protocol|Computer support ...|
+|    3|  49.0|    1|        Idaho|No Protocol|            Musician|
+|    4|  65.0|    1|     Arkansas|No Protocol|                null|
+|    5|  66.0|    1|        Texas|No Protocol|              Doctor|
+|    6|  52.0|    1| Pennsylvania|No Protocol|          Pharmacist|
+|    7|  65.0|    1|   New Mexico|No Protocol|                null|
+|    8|  39.0|    1|      Indiana|No Protocol|Environmental sci...|
+|    9|  39.0|    1|        Texas|No Protocol|Environmental sci...|
+|   10|  65.0|    1|       Alaska|No Protocol|                null|
+|   11|  65.0|    1|  Mississippi|No Protocol|                null|
+|   12|  52.0|    1|New Hampshire|No Protocol|          Pharmacist|
+|   13|  49.0|    1|     Oklahoma|No Protocol|            Musician|
+|   14|  72.0|    1|     Nebraska|No Protocol|Computer support ...|
+|   15|  72.0|    1|      Indiana|No Protocol|Computer support ...|
+|   16|  63.0|    1|New Hampshire|No Protocol|   Financial analyst|
+|   17|  72.0|    1| North Dakota|No Protocol|Computer support ...|
+|   18|  72.0|    1|     Michigan|No Protocol|Computer support ...|
+|   19|  66.0|    1|     Oklahoma|No Protocol|              Doctor|
+|   20|  39.0|    1|     Michigan|No Protocol|Environmental sci...|
++-----+------+-----+-------------+-----------+--------------------+
+only showing top 20 rows
+
+ending
+******Starting Spark streaming Hackthon**********
+root
+ |-- id: string (nullable = true)
+ |-- chat: string (nullable = true)
+ |-- type: string (nullable = true)
+
+SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+
+
+
+Jun 10, 2020 8:06:46 PM INFO: org.apache.parquet.hadoop.codec.CodecConfig: Compression: SNAPPY
+Jun 10, 2020 8:06:46 PM INFO: org.apache.parquet.hadoop.ParquetOutputFormat: Parquet block size to 134217728
+Jun 10, 2020 8:06:46 PM INFO: org.apache.parquet.hadoop.ParquetOutputFormat: Parquet page size to 1048576
+Jun 10, 2020 8:06:46 PM INFO: org.apache.parquet.hadoop.ParquetOutputFormat: Parquet dictionary page size to 1048576
+Jun 10, 2020 8:06:46 PM INFO: org.apache.parquet.hadoop.ParquetOutputFormat: Dictionary is on
+Jun 10, 2020 8:06:46 PM INFO: org.apache.parquet.hadoop.ParquetOutputFormat: Validation is off
+Jun 10, 2020 8:06:46 PM INFO: org.apache.parquet.hadoop.ParquetOutputFormat: Writer version is: PARQUET_1_0
+Jun 10, 2020 8:06:47 PM INFO: org.apache.parquet.hadoop.InternalParquetRecordWriter: Flushing mem columnStore to file. allocated memory: 419
+Jun 10, 2020 8:06:48 PM INFO: org.apache.parquet.hadoop.ColumnChunkPageWriteStore: written 43B for [id] BINARY: 24 values, 14B raw, 16B comp, 1 pages, encodings: [RLE, BIT_PACKED, PLAIN_DICTIONARY], dic { 3 entries, 15B raw, 3B comp}
+Jun 10, 2020 8:06:48 PM INFO: org.apache.parquet.hadoop.ColumnChunkPageWriteStore: written 62B for [chat] BINARY: 24 values, 23B raw, 25B comp, 1 pages, encodings: [RLE, BIT_PACKED, PLAIN_DICTIONARY], dic { 21 entries, 212B raw, 21B comp}
+
